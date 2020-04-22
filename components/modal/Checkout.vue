@@ -7,6 +7,9 @@
 				<button class="delete" aria-label="close" @click="closeModal(true)"></button>
 			</header>
 			<section class="modal-card-body">
+				<h3 v-if="menus.length > 0" style="text-decoration: underline; margin-bottom: 22px;">
+					{{ restaurantName }}
+				</h3>
 				<div v-if="!isCheckoutSection">
 					<div class="box"  v-for="(menu, idx) in menus" :key="idx">
 						<button class="is-pulled-right button is-info is-inverted" @click="removeFromCartComp(menu.restaurant, menu.id)">{{ removeLabel }}</button>
@@ -49,7 +52,8 @@ export default {
 	computed: {
 		
 		...mapGetters({
-			menus: 'cart/menus'
+			menus: 'cart/menus',
+			restaurantName: 'cart/restaurantName'
 		}),
 
 		products () {

@@ -38,6 +38,8 @@ export default {
     }
   },
   addToCart({ commit, state }, { restaurantId, restaurantName, menu, vueComp }) {
+    console.log('restaurantId', restaurantId);
+    console.log('restaurantName', restaurantName);
     if (restaurantId !== fn.getCartCookie(vueComp).restaurantId) {
       commit('RESET_CART');
     }

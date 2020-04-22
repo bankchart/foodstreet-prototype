@@ -17,11 +17,11 @@
       <div class="card-footer btn-actions">
         <div class="card-footer-item field is-grouped">
           <div class="buttons">
-            <button class="button is-primary" v-if="!isSelected" @click="addToCartComp(menu.restaurant, menu.id, menu.name, menu.price)">{{ addToCartLabel }}</button>
-            <button class="button is-text" v-if="isSelected" @click="removeFromCartComp(menu.restaurant, menu.id)">{{ removeFromCartLabel }}</button>
+            <button class="button is-primary" v-if="!isSelected" @click="addToCartComp(menu.restaurant, menu.restaurant_name, menu.id, menu.name, menu.price)">{{ addToCartLabel }}</button>
+            <button class="button is-text" v-if="isSelected" @click="removeFromCartComp(menu.restaurant, menu.restaurant_name, menu.id)">{{ removeFromCartLabel }}</button>
           </div>
            <div class="select is-rounded is-small">
-            <select @change="onSelectQuantity(menu.restaurant, menu.id, menu.name, menu.price)" v-model="selected">
+            <select @change="onSelectQuantity(menu.restaurant, menu.restaurant_name, menu.id, menu.name, menu.price)" v-model="selected">
               <option v-for="(quantity, idx) in quantityArray" :key="idx" :value="quantity">{{ quantity }}</option>
             </select>
           </div>
@@ -53,7 +53,6 @@ export default {
     for (let i = 1; i <= 20; i++) {
       this.quantityArray.push(i);
     }
-    console.log(this.vueComp);
     for (let m of this.menus) {
       if (m.id === this.menu.id) {
         this.selected = m.qty
@@ -75,10 +74,11 @@ export default {
       removeFromCart: 'cart/removeFromCart',
       updateQtyCart: 'cart/updateQtyCart'
     }),
-    addToCartComp(restaurantId, menuId, menuName, menuPrice) {
+    addToCartComp(restaurantId, restaurantName, menuId, menuName, menuPrice) {
       this.isSelected = true;
       this.addToCart({
-        restaurantId: restaurantId,
+        restaurantId,
+        restaurantName,
         menu: {
           id: menuId,
           name: menuName,
@@ -88,19 +88,21 @@ export default {
         vueComp: this.vueComp
       });
     },
-    removeFromCartComp(restaurantId, menuId) {
+    removeFromCartComp(restaurantId, restaurantName, menuId) {
       this.isSelected = false;
       this.selected = 1;
       this.removeFromCart({
         restaurantId,
+        restaurantName,
         menuId,
         vueComp: this.vueComp
       });
     },
-    onSelectQuantity(restaurantId, menuId) {
+    onSelectQuantity(restaurantId, restaurantName, menuId) {
       if (this.isSelected) {
         this.updateQtyCart({
           restaurantId,
+          restaurantName,
           menuId,
           menuQty: this.selected,
           vueComp: this.vueComp

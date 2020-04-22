@@ -9,7 +9,7 @@
       <div class="card column is-one-quarter cursor" v-for="(menu, idx) in menus" :key="idx">
         <VmFoods :menu="menu"></VmFoods>
       </div>
-      <div class="section" v-if="menus.length === 0">
+      <div class="section" v-if="menus.length === 0 && isAfterFetchMenu">
         <p>{{ noRestaurantLabel }}</p>
       </div>
     </div>
@@ -28,6 +28,8 @@ export default {
 
   data () {
     return {
+      vueComp: this,
+      isAfterFetchMenu: false,
       restaurant: '',
       noRestaurantLabel: 'No Menu found',
       menus: []
@@ -35,6 +37,7 @@ export default {
   },
 
   async mounted () {
+    console.log(this.vueComp);
     try {
       const url = `http://localhost:1337/restaurants/${this.$route.params.id}`;
       const response = await axios.get(url);
@@ -46,6 +49,7 @@ export default {
     } catch (e) {
       console.error(e);
     }
+    this.isAfterFetchMenu = true; 
   }
 }
 
