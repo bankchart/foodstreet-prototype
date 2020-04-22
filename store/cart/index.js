@@ -1,9 +1,4 @@
-const state = () => ({
-  restaurantId: null,
-  restaurantName: null,
-  menus: []
-});
-
+import state from './states';
 import getters from './getters';
 import mutations from './mutations';
 import actions from './actions';
