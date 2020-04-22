@@ -25,7 +25,13 @@ export default {
     VmLoginModal,
     VmRegistrationModal,
     VmCheckoutModal
-  }
+  },
+
+  mounted() {
+    this.$store.dispatch('cart/initial', {
+      util: this.$util,
+    });
+  },
 }
 </script>
 

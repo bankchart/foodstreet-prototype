@@ -2,7 +2,9 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
-
+  router: {
+    middleware: [ 'nuxtInitWeb' ]
+  },
   /*
   ** Headers of the page
   */
@@ -75,7 +77,10 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [],
+  plugins: [
+    '~/plugins/vue-inject.js',
+    '~/plugins/vue-initial.js'
+  ],
 
   /*
   ** Nuxt.js modules

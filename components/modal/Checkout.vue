@@ -4,16 +4,16 @@
 		<div class="modal-card">
 			<header class="modal-card-head">
 				<p class="modal-card-title">{{ modalTitle }}</p>
-				<button class="delete" aria-label="close" @click="closeModal(false)"></button>
+				<button class="delete" aria-label="close" @click="closeModal(true)"></button>
 			</header>
 			<section class="modal-card-body">
 				<div v-if="!isCheckoutSection">
-					<div class="box" v-for="product in products" :key="product.id">
-						<button class="is-pulled-right button is-info is-inverted" @click="removeFromCart(product.id)">{{ removeLabel }}</button>
-						<p>{{ product.title }}  {{ product.quantity > 0 ?  ` - Quantity: ${product.quantity}` : ''}}</p>
-						<p>{{ product.price }} &euro;</p>
+					<div class="box"  v-for="(menu, idx) in menus" :key="idx">
+						<button class="is-pulled-right button is-info is-inverted" @click="removeFromCartComp(menu.restaurant, menu.id)">{{ removeLabel }}</button>
+						<p>{{ menu.name }}  {{ menu.qty > 0 ?  ` - Quantity: ${menu.qty}` : ''}}</p>
+						<p>&#3647;{{ menu.price }}</p>
 					</div>
-					<div v-if="products.length === 0">
+					<div v-if="menus.length === 0">
 						<p>{{ cartEmptyLabel }}</p>
 					</div>
 				</div>
@@ -22,7 +22,7 @@
 				</div>
 			</section>
 			<footer class="modal-card-foot">
-				<button v-show="products.length > 0 && !isCheckoutSection" class="button is-success" @click="onNextBtn">{{ buyLabel }}</button>
+				<button v-show="menus.length > 0 && !isCheckoutSection" class="button is-success" @click="onNextBtn">{{ buyLabel }}</button>
 				<button v-if="isCheckoutSection" class="button is-success" @click="closeModal(true)">{{ closeLabel }}</button>
 			</footer>
 		</div>
@@ -30,11 +30,14 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
 	name: 'checkout',
     
 	data () {
 		return {
+			vueComp: this,
 			modalTitle: 'Checkout',
 			removeLabel: 'Remove from cart',
 			cartEmptyLabel: 'Your cart is empty',
@@ -44,41 +47,42 @@ export default {
 	},
 
 	computed: {
-			products () {
-				return this.$store.getters.productsAdded;
-			},
-			openModal () {
-				if (this.$store.getters.isCheckoutModalOpen) {
-					return true;
-				} else {
-					return false;
+		
+		...mapGetters({
+			menus: 'cart/menus'
+		}),
+
+		products () {
+			return this.$store.getters.productsAdded;
+		},
+		openModal () {
+			return this.$store.getters.isCheckoutModalOpen ? true : false;
+		},
+		buyLabel () {
+			let totalProducts = this.menus.length,
+			productsAdded = this.menus,
+			pricesArray = [],
+			productLabel = '',
+			finalPrice = '',
+			quantity = 1;
+
+			productsAdded.forEach(product => {
+
+				if (product.qty >= 1) {
+					quantity = product.qty;
 				}
-			},
-			buyLabel () {
-				let totalProducts = this.products.length,
-						productsAdded = this.$store.getters.productsAdded,
-						pricesArray = [],
-						productLabel = '',
-						finalPrice = '',
-						quantity = 1;
 
-				productsAdded.forEach(product => {
+				pricesArray.push((product.price * quantity)); // get the price of every product added and multiply quantity
+			});
 
-					if (product.quantity >= 1) {
-						quantity = product.quantity;
-					}
-
-					pricesArray.push((product.price * quantity)); // get the price of every product added and multiply quantity
-				});
-
-				finalPrice = pricesArray.reduce((a, b) => a + b, 0); // sum the prices
-				
-				if (totalProducts > 1) { // set plural or singular
-					productLabel = 'products';
-				} else {
-					productLabel = 'product';
-				}
-				return `Buy ${totalProducts} ${productLabel} at ${finalPrice}€`;
+			finalPrice = pricesArray.reduce((a, b) => a + b, 0); // sum the prices
+			
+			if (totalProducts > 1) { // set plural or singular
+				productLabel = 'products';
+			} else {
+				productLabel = 'product';
+			}
+			return `Buy ${totalProducts} ${productLabel} at ฿${finalPrice}`;
 		},
 		isUserLoggedIn () {
 			return this.$store.getters.isUserLoggedIn;
@@ -86,6 +90,11 @@ export default {
 	},
 
 	methods: {
+
+		...mapActions({
+			removeFromCart: 'cart/removeFromCart'
+		}),
+
 		closeModal (reloadPage) {
 			this.$store.commit('showCheckoutModal', false);
 
@@ -93,14 +102,18 @@ export default {
 				window.location.reload();
 			}
 		},
-		removeFromCart (id) {
+		removeFromCartComp(restaurantId, menuId) {
 			let data = {
-					id: id,
-					status: false
-			}
-			this.$store.commit('removeFromCart', id);
+				id: menuId,
+				status: false
+			};
+      this.removeFromCart({
+        restaurantId,
+        menuId,
+        vueComp: this.vueComp
+			});
 			this.$store.commit('setAddedBtn', data);
-		},
+    },
 		onNextBtn () {
 			if (this.isUserLoggedIn) {
 				this.isCheckoutSection = true;
