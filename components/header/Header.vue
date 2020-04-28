@@ -25,9 +25,6 @@
           <div class="navbar-item">
             <button @click="$router.push('/order')" class="button">Order</button>
           </div>
-          <div class="navbar-item">
-            <button class="button">History</button>
-          </div>
           <!-- <div class="navbar-item social">
             <a href="#" class="icon" :title="facebookTooltip">
               <i class="fa fa-facebook"></i>
