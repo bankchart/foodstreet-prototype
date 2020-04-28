@@ -22,7 +22,6 @@ export default {
   },
   RESET_CART(state) {
     state.restaurantId = null;
-    state.restaurantName = null;
     state.menus = [];
   },
   REMOVE_MENU(state, menuId) {

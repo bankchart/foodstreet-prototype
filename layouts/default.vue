@@ -6,17 +6,20 @@
       <VmLoginModal></VmLoginModal>
       <VmRegistrationModal></VmRegistrationModal>
       <VmCheckoutModal></VmCheckoutModal>
+      <VmVerticalStepsProgressTrackerModal></VmVerticalStepsProgressTrackerModal>
     </main>
     <VmFooter></VmFooter>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import VmHeader from '@/components/header/Header';
 import VmFooter from '@/components/footer/Footer';
 import VmLoginModal from '@/components/modal/Login';
 import VmRegistrationModal from '@/components/modal/Registration';
 import VmCheckoutModal from '@/components/modal/Checkout';
+import VmVerticalStepsProgressTrackerModal from '@/components/modal/VerticalStepsProgressTracker';
 
 export default {
   components: {
@@ -24,14 +27,35 @@ export default {
     VmFooter,
     VmLoginModal,
     VmRegistrationModal,
-    VmCheckoutModal
+    VmCheckoutModal,
+    VmVerticalStepsProgressTrackerModal
   },
 
   mounted() {
     this.$store.dispatch('cart/initial', {
+      util: this.$util
+    });
+
+    this.$store.dispatch('user/verifyAccessToken', {
       util: this.$util,
+    }).then((res) => {
+      // this.$store.dispatch('user/setUserLoggedIn', true);
+      this.$store.commit('isUserLoggedIn', true);
+      // this.setDisplayName(res.display_name);
+      console.log('response', res);
+    }).catch((e) => {
+      // this.$store.dispatch('user/setUserLoggedIn', false);
+			this.$store.commit('isUserLoggedIn', false);
+      console.log('error', e)
     });
   },
+
+  methods: {
+    ...mapActions({
+      setUserLoggedIn: 'user/setUserLoggedIn',
+      setDisplayName: 'user/setDisplayName'
+    })
+  }
 }
 </script>
 

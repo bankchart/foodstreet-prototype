@@ -55,5 +55,13 @@ export default {
   updateQtyCart({ commit, state }, { restaurantId, restaurantName, menuId, menuQty, vueComp }) {
     commit('UPDATE_MENU', { menuId, menuQty });
     fn.setCartCookie(restaurantId, restaurantName, state.menus, vueComp);
+  },
+  reset({ commit, state }, { util }) {
+    commit('RESET_CART');
+    util.setCookie('cart', JSON.stringify({
+      restaurantId: state.restaurantId,
+      restaurantName: state.restaurantName,
+      menus: state.menus
+    }));
   }
 };

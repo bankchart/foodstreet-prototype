@@ -119,7 +119,8 @@ export const state = () => ({
   systemInfo: {
     openLoginModal: false,
     openSignupModal: false,
-    openCheckoutModal: false
+    openCheckoutModal: false,
+    openStepsTrackerProgressModal: false
   }
 })
 
@@ -154,6 +155,9 @@ export const getters = {
   },
   isCheckoutModalOpen: state => {
     return state.systemInfo.openCheckoutModal;
+  },
+  isOpenStepsTrackerProgressModalOpen: state => {
+    return state.systemInfo.openStepsTrackerProgressModal;
   },
   quantity: state => {
     return state.products.quantity;
@@ -210,6 +214,9 @@ export const mutations = {
   },
   showCheckoutModal: (state, show) => {
     state.systemInfo.openCheckoutModal = show;
+  },
+  showStepsTrackerProgressModal: (state, show) => {
+    state.systemInfo.openStepsTrackerProgressModal = show;
   },
   addToFavourite: (state, id) => {
     state.products.forEach(el => {

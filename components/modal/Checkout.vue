@@ -53,7 +53,9 @@ export default {
 		
 		...mapGetters({
 			menus: 'cart/menus',
-			restaurantName: 'cart/restaurantName'
+			restaurantId: 'cart/restaurantId',
+			restaurantName: 'cart/restaurantName',
+			userId: 'user/id'
 		}),
 
 		products () {
@@ -96,7 +98,10 @@ export default {
 	methods: {
 
 		...mapActions({
-			removeFromCart: 'cart/removeFromCart'
+			removeFromCart: 'cart/removeFromCart',
+			resetCart: 'cart/reset',
+			verifyAccessToken: 'user/verifyAccessToken',
+			createOrder: 'order/create'
 		}),
 
 		closeModal (reloadPage) {
@@ -118,9 +123,25 @@ export default {
 			});
 			this.$store.commit('setAddedBtn', data);
     },
-		onNextBtn () {
+		async onNextBtn () {
+			try {
+				const result = await this.verifyAccessToken({ util: this.$util });
+				this.$store.commit('isUserLoggedIn', true);
+			} catch (e) {
+				this.$store.commit('isUserLoggedIn', false);
+			}
 			if (this.isUserLoggedIn) {
+				try {
+				const result = await this.createOrder({
+					userId: this.userId,
+					restaurantId: this.restaurantId,
+					menus: this.menus					
+				});
+				this.resetCart({ util: this.$util });
 				this.isCheckoutSection = true;
+				} catch (e) {
+					console.error(e);
+				}
 			} else {
 				this.$store.commit('showCheckoutModal', false);
 				this.$store.commit('showLoginModal', true);

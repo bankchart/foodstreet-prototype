@@ -21,13 +21,13 @@
 			</div>
 		</div>
 		<div v-if="isUserLoggedIn" class="navbar-item has-dropdown is-hoverable">
-			<a class="navbar-link">
-			Welcome {{ getUserName }}
+			<a class="navbar-link" style="padding-top: 0px;">
+			Welcome {{ displayName }}
 			</a>
 			<div class="navbar-dropdown is-boxed">
-				<nuxt-link class="navbar-item" :to="{ name: 'user-wishlist' }">
+				<!-- <nuxt-link class="navbar-item" :to="{ name: 'user-wishlist' }">
 					{{ wishlistLabel }}
-				</nuxt-link>
+				</nuxt-link> -->
 				<hr class="navbar-divider">
 				<a class="navbar-item" @click="logout">
 					{{ logoutLabel }}
@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
 	name: 'VmMenu',
 	data () {
@@ -50,6 +52,9 @@ export default {
 	},
 
 	computed: {
+		...mapGetters({
+			displayName: 'user/displayName'
+		}),		
 		isUserLoggedIn () {
 			return this.$store.getters.isUserLoggedIn;
 		},
@@ -65,10 +70,15 @@ export default {
 	},
 
 	methods: {
+		...mapActions({
+			userLogout: 'user/logout'
+		}),
 		logout () {
 			this.$store.commit('isUserLoggedIn', false);
 			this.$store.commit('isUserSignedUp', false);
-			this.$store.commit('removeProductsFromFavourite');
+			// this.$store.commit('removeProductsFromFavourite');
+
+			this.userLogout();
 
 			// redirect to homepage
 			this.$router.push({ name: 'index' });
