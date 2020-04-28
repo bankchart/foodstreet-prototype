@@ -104,7 +104,7 @@
                 <li class="progress-step" :class="[ ord.order.delivery_shipping_datetime ? 'is-complete' : '' ]">
                   <div class="progress-marker"></div>
                   <div class="progress-text">
-                    <h4 class="progress-title" style="font-weight: normal">อยู่ระหว่างจัดส่ง</h4>
+                    <h4 class="progress-title">อยู่ระหว่างจัดส่ง</h4>
                     <i class="text-timestamp">เวลา: {{ ord.order.delivery_shipping_datetime ? dateFormat(new Date(ord.order.delivery_shipping_datetime)) : '-' }}</i>
                   </div>
                 </li>
@@ -112,7 +112,7 @@
                 <li class="progress-step" :class="[ ord.order.delivery_received_datetime ? 'is-complete' : '' ]">
                   <div class="progress-marker"></div>
                   <div class="progress-text">
-                    <h4 class="progress-title" style="font-weight: normal">ส่งอาหารเรียบร้อย</h4>
+                    <h4 class="progress-title">ส่งอาหารเรียบร้อย</h4>
                     <i class="text-timestamp">เวลา: {{ ord.order.delivery_received_datetime ? dateFormat(new Date(ord.order.delivery_received_datetime)) : '-' }}</i>
                   </div>
                 </li>
@@ -127,6 +127,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import socketIOClient from 'socket.io-client'
 
 export default {
   name: "order",
@@ -134,6 +135,7 @@ export default {
   data() {
     return {
       vueComp: this,
+      renderComponent: true,
       modalTitle: "Steps Tracker Progress",
       closeLabel: "Close",
       orders: []
@@ -141,27 +143,33 @@ export default {
   },
 
   mounted() {
-    this.orderList({
-      accessToken: this.$util.getCookie('access_token')
-      })
-      .then((res) => {
-        this.orders = res;
-        this.orders.forEach((ord) => {
-          ord.total_price = this.summaryTotalPrice(ord.menus);
-        });
-        console.log(this.orders);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    this.listOrder();
+    const respSocket = socketIOClient('http://localhost:1337');
+    respSocket.on('update_order_status', (order) => {
+      const orderTmp = JSON.parse(order);
+      this.listOrder();
+    });
   },
 
   methods: {
     ...mapActions({
       orderList: 'order/getOrderByAccessToken'
     }),
+    listOrder() {
+      this.orderList({
+        accessToken: this.$util.getCookie('access_token')
+      })
+      .then((res) => {
+        this.orders = res;
+        this.orders.forEach((ord) => {
+          ord.total_price = this.summaryTotalPrice(ord.menus);
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+    },
     summaryTotalPrice(menus) {
-      console.log(menus);
       let summary = 0;
       menus.forEach((menu) => {
         summary += menu.menu_price * menu.menu_amount;
