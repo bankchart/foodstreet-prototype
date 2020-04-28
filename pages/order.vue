@@ -1,8 +1,11 @@
 <template>
   <section class="hero">
     <client-only>
+      <div class="hero-body" v-if="orders.length === 0">
+        Empty orders
+      </div>
       <div class="hero-body" v-for="(ord, idx) in orders" :key="idx">
-        <div style="text-align: center; font-weight: bold;">หมายเลขสั่งซื้อ : {{ ord.order.trans_id }}</div>
+        <div style="text-align: center; font-weight: bold;">รหัสสั่งซื้อ : {{ ord.order.trans_id }}</div>
         <div class="container">
           <div class="columns is-centered" style="margin-top: 15px;">
             <div class="box" style="margin-right: 30px;">
