@@ -1,137 +1,124 @@
 <template>
   <section class="hero">
-    <div class="hero-body">
-      <div class="container">
-        <div class="columns is-centered">
-          <div class="box" style="margin-right: 30px;">
-            <div id="invoice-POS">
-              <center id="top">
-                <div class="logo"></div>
-                <div class="info">
-                  <h2>:: Food Delivery ::</h2>
+    <client-only>
+      <div class="hero-body" v-for="(ord, idx) in orders" :key="idx">
+        <div style="text-align: center; font-weight: bold;">หมายเลขสั่งซื้อ : {{ ord.order.trans_id }}</div>
+        <div class="container">
+          <div class="columns is-centered" style="margin-top: 15px;">
+            <div class="box" style="margin-right: 30px;">
+              <div id="invoice-POS">
+                <center id="top">
+                  <div class="logo"></div>
+                  <div class="info">
+                    <h2>:: Food Delivery ::</h2>
+                  </div>
+                  <!--End Info-->
+                </center>
+                <!--End InvoiceTop-->
+                <div id="mid">
+                  <div class="info">
+                    <h2>ผู้ให้บริการ</h2>
+                    <p>
+                      ร้าน : {{ ord.order.restaurant_name }}
+                      <br />ที่อยู่ : {{ ord.order.restaurant.address }}
+                      <br />อีเมล : {{ ord.order.restaurant.email }}
+                      <br />เบอร์โทร : {{ ord.order.restaurant.tel }}
+                      <br />
+                    </p>
+                  </div>
+                  <div class="info">
+                    <h2>รายละเอียดลูกค้า</h2>
+                    <p>
+                      คุณ{{ ord.customer.first_name + ' ' + ord.customer.last_name }}
+                      <br />ที่อยู่ : {{ ord.customer.address }}
+                      <br />อีเมล : {{ ord.customer.email }}
+                      <br />เบอร์โทร : {{ ord.customer.email }}
+                      <br />
+                    </p>
+                  </div>
                 </div>
-                <!--End Info-->
-              </center>
-              <!--End InvoiceTop-->
-              <div id="mid">
-                <div class="info">
-                  <h2>ผู้ให้บริการ</h2>
-                  <p>
-                    ร้าน : Im Chan Restaurant
-                    <br />ที่อยู่ : Nonthaburi, Nonthaburi Province, Thailand
-                    <br />อีเมล : imchan@restaurant.com
-                    <br />เบอร์โทร : 0999999999
-                    <br />
-                  </p>
+                <!--End Invoice Mid-->
+                <div id="bot">
+                  <div id="table">
+                    <table>
+                      <tr class="tabletitle">
+                        <td class="item">
+                          <h2>รายการ</h2>
+                        </td>
+                        <td class="Hours">
+                          <h2>จำนวน</h2>
+                        </td>
+                        <td class="Rate">
+                          <h2>ราคา</h2>
+                        </td>
+                      </tr>
+                      <tr class="service" v-for="(menu, idx_item) in ord.menus" :key="idx_item">
+                        <td class="tableitem">
+                          <p class="itemtext">{{ menu.menu_name }}</p>
+                        </td>
+                        <td class="tableitem">
+                          <p class="itemtext">{{ menu.menu_amount }}</p>
+                        </td>
+                        <td class="tableitem">
+                          <p class="itemtext">&#3647;{{ menu.menu_price }}</p>
+                        </td>
+                      </tr>
+                      <tr class="tabletitle">
+                        <td></td>
+                        <td class="Rate" style="font-size: 12px">
+                          <h2>ยอดสุทธิ</h2>
+                        </td>
+                        <td class="payment" style="font-size: 12px">
+                          <h2>&#3647;{{ ord.total_price }}</h2>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <!--End Table-->
                 </div>
-                <div class="info">
-                  <h2>รายละเอียดลูกค้า</h2>
-                  <p>
-                    คุณcust_bankchart cust_arlai
-                    <br />ที่อยู่ : Nonthaburi, Nonthaburi Province, Thailand
-                    <br />อีเมล : mrbankshart@gmail.com
-                    <br />เบอร์โทร : 0223456789
-                    <br />
-                  </p>
-                </div>
+                <!--End InvoiceBot-->
               </div>
-              <!--End Invoice Mid-->
-              <div id="bot">
-                <div id="table">
-                  <table>
-                    <tr class="tabletitle">
-                      <td class="item">
-                        <h2>รายการ</h2>
-                      </td>
-                      <td class="Hours">
-                        <h2>จำนวน</h2>
-                      </td>
-                      <td class="Rate">
-                        <h2>ราคา</h2>
-                      </td>
-                    </tr>
-                    <tr class="service">
-                      <td class="tableitem">
-                        <p class="itemtext">หมูยอ</p>
-                      </td>
-                      <td class="tableitem">
-                        <p class="itemtext">1</p>
-                      </td>
-                      <td class="tableitem">
-                        <p class="itemtext">&#3647;75.00</p>
-                      </td>
-                    </tr>
-                    <tr class="service">
-                      <td class="tableitem">
-                        <p class="itemtext">กระเพราหมูสับ</p>
-                      </td>
-                      <td class="tableitem">
-                        <p class="itemtext">1</p>
-                      </td>
-                      <td class="tableitem">
-                        <p class="itemtext">&#3647;60.00</p>
-                      </td>
-                    </tr>
-                    <!-- <tr class="tabletitle">
-                      <td></td>
-                      <td class="Rate"><h2>ภาษีมูลค่าเพิ่ม</h2></td>
-                      <td class="payment"><h2>7%</h2></td>
-                    </tr>-->
-                    <tr class="tabletitle">
-                      <td></td>
-                      <td class="Rate" style="font-size: 12px">
-                        <h2>ยอดสุทธิ</h2>
-                      </td>
-                      <td class="payment" style="font-size: 12px">
-                        <h2>&#3647;135.00</h2>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!--End Table-->
-              </div>
-              <!--End InvoiceBot-->
+              <!--End Invoice-->
             </div>
-            <!--End Invoice-->
-          </div>
-          <div>
-            <ul class="progress-tracker progress-tracker--vertical">
-              <li class="progress-step is-complete">
-                <div class="progress-marker"></div>
-                <div class="progress-text">
-                  <h4 class="progress-title">ตรวจสอบคำสั่งซื้อ</h4>
-                  <i class="text-timestamp">เวลา: Friday, 29 Jan 2020 13:00:00</i>
-                </div>
-              </li>
+            <div>
+              <ul class="progress-tracker progress-tracker--vertical">
+                <li class="progress-step is-complete">
+                  <div class="progress-marker"></div>
+                  <div class="progress-text">
+                    <h4 class="progress-title">ตรวจสอบคำสั่งซื้อ</h4>
+                    <i class="text-timestamp">เวลา: {{ ord.order.order_incoming_datetime ? dateFormat(new Date(ord.order.order_incoming_datetime)) : '-' }}</i>
+                  </div>
+                </li>
 
-              <li class="progress-step is-active">
-                <div class="progress-marker"></div>
-                <div class="progress-text">
-                  <h4 class="progress-title">ปรุงอาหาร</h4>
-                  <i class="text-timestamp">เวลา: Friday, 29 Jan 2020 13:10:55</i>
-                </div>
-              </li>
+                <li class="progress-step" :class="[ ord.order.order_accept_datetime ? 'is-complete' : '' ]">
+                  <div class="progress-marker"></div>
+                  <div class="progress-text">
+                    <h4 class="progress-title">ปรุงอาหาร</h4>
+                    <i class="text-timestamp">เวลา: {{ ord.order.order_accept_datetime ? dateFormat(new Date(ord.order.order_accept_datetime)) : '-' }}</i>
+                  </div>
+                </li>
 
-              <li class="progress-step">
-                <div class="progress-marker"></div>
-                <div class="progress-text">
-                  <h4 class="progress-title" style="font-weight: normal">อยู่ระหว่างจัดส่ง</h4>
-                  <i class="text-timestamp">เวลา: -</i>
-                </div>
-              </li>
+                <li class="progress-step" :class="[ ord.order.delivery_shipping_datetime ? 'is-complete' : '' ]">
+                  <div class="progress-marker"></div>
+                  <div class="progress-text">
+                    <h4 class="progress-title" style="font-weight: normal">อยู่ระหว่างจัดส่ง</h4>
+                    <i class="text-timestamp">เวลา: {{ ord.order.delivery_shipping_datetime ? dateFormat(new Date(ord.order.delivery_shipping_datetime)) : '-' }}</i>
+                  </div>
+                </li>
 
-              <li class="progress-step">
-                <div class="progress-marker"></div>
-                <div class="progress-text">
-                  <h4 class="progress-title" style="font-weight: normal">ส่งอาหารเรียบร้อย</h4>
-                  <i class="text-timestamp">เวลา: -</i>
-                </div>
-              </li>
-            </ul>
+                <li class="progress-step" :class="[ ord.order.delivery_received_datetime ? 'is-complete' : '' ]">
+                  <div class="progress-marker"></div>
+                  <div class="progress-text">
+                    <h4 class="progress-title" style="font-weight: normal">ส่งอาหารเรียบร้อย</h4>
+                    <i class="text-timestamp">เวลา: {{ ord.order.delivery_received_datetime ? dateFormat(new Date(ord.order.delivery_received_datetime)) : '-' }}</i>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </client-only>
   </section>
 </template>
 
@@ -145,20 +132,45 @@ export default {
     return {
       vueComp: this,
       modalTitle: "Steps Tracker Progress",
-      closeLabel: "Close"
+      closeLabel: "Close",
+      orders: []
     };
   },
 
-  computed: {
-    openModal() {
-      // return this.$store.getters.isOpenStepsTrackerProgressModalOpen ? true : false;
-      return true;
-    }
+  mounted() {
+    this.orderList({
+      accessToken: this.$util.getCookie('access_token')
+      })
+      .then((res) => {
+        this.orders = res;
+        this.orders.forEach((ord) => {
+          ord.total_price = this.summaryTotalPrice(ord.menus);
+        });
+        console.log(this.orders);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   },
 
   methods: {
-    closeModal(reloadPage) {
-      this.$store.commit("showStepsTrackerProgressModal", false);
+    ...mapActions({
+      orderList: 'order/getOrderByAccessToken'
+    }),
+    summaryTotalPrice(menus) {
+      console.log(menus);
+      let summary = 0;
+      menus.forEach((menu) => {
+        summary += menu.menu_price * menu.menu_amount;
+      });
+      return summary;
+    },
+    dateFormat(d) {
+      return this.appendLeadingZeroes(d.getDate())  + "-" + (this.appendLeadingZeroes(d.getMonth() + 1)) + "-" + d.getFullYear() + " " +
+      this.appendLeadingZeroes(d.getHours()) + ":" + this.appendLeadingZeroes(d.getMinutes());
+    },
+    appendLeadingZeroes(n) {
+      return n <= 9 ? "0" + n : n;
     }
   }
 };

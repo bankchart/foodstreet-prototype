@@ -23,7 +23,7 @@
         
         <div class="navbar-end">
           <div class="navbar-item">
-            <button class="button">Order</button>
+            <button @click="$router.push('/order')" class="button">Order</button>
           </div>
           <div class="navbar-item">
             <button class="button">History</button>

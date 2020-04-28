@@ -1,7 +1,6 @@
 <template>
   <div>
     <VmRestaurant></VmRestaurant>
-    <button @click="openStepsTrackerProgress">open steps tracker progress</button>
   </div>
 </template>
 
@@ -14,12 +13,6 @@ export default {
   
   components: {
     VmRestaurant
-  },
-
-  methods: { 
-    openStepsTrackerProgress() {
-      this.$store.commit('showStepsTrackerProgressModal', true);
-   }
   }
 };
 </script>

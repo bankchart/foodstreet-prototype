@@ -1,14 +1,12 @@
 import axios from 'axios';
 
 export default {
-  create({ commit }, { userId, restaurantId, menus }) {
+  create({ commit }, { userId, restaurantId, menus, accessToken }) {
     let url = 'http://localhost:1337/order-api',
-    accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNTg3NjE0ODIxLCJleHAiOjE1OTAyMDY4MjF9.zARj9hRYUdygS8lkMWXdzW5ScRD2hca8r7JTrMp6eWY',
     productsAdded = menus,
     pricesArray = [],
     finalPrice = '',
-    quantity = 1,
-    currentDatetime = new Date().toISOString();
+    quantity = 1;
 
     productsAdded.forEach(product => {
       if (product.qty >= 1) {
@@ -40,5 +38,24 @@ export default {
         });
       }
     });
+  },
+  getOrderByAccessToken({ commit }, { accessToken }) {
+    let url = 'http://localhost:1337/order-api';
+    return new Promise(async (resolve, reject) => {
+      try {
+        const result = await axios.get(`${url}/orders`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        resolve(result.data);
+      } catch (e) {
+        console.error(e);
+        reject({
+          status: e.response.status,
+          message: e.response.statusText
+        });
+      }
+    })
   }
 };

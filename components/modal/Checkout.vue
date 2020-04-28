@@ -135,7 +135,8 @@ export default {
 				const result = await this.createOrder({
 					userId: this.userId,
 					restaurantId: this.restaurantId,
-					menus: this.menus					
+					menus: this.menus,
+					accessToken: this.$util.getCookie('access_token')
 				});
 				this.resetCart({ util: this.$util });
 				this.isCheckoutSection = true;

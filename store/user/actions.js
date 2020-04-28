@@ -2,8 +2,8 @@ import axios from 'axios';
 
 export default {
   verifyAccessToken({ commit }, { util }) {
-    // const accessToken = util.getCookie('access_token');
-    const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNTg3NjE0NzUxLCJleHAiOjE1OTAyMDY3NTF9.KI_KAsoXJGho748N-CqgerXnppMEJIV48gB25Y5NlWg';
+    // util.setCookie('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNTg3NjE0NzUxLCJleHAiOjE1OTAyMDY3NTF9.KI_KAsoXJGho748N-CqgerXnppMEJIV48gB25Y5NlWg');
+    const accessToken = util.getCookie('access_token');
     const url = 'http://localhost:1337/users/me'; 
     commit('SET_ACCESS_TOKEN', accessToken);
     return new Promise(async (resolve, reject) => {
